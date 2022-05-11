@@ -7,7 +7,6 @@ library(meta)
 #library(readxl)
 #data <- read_excel("YourPath/data.xlsx")
 
-data <- meta
 # calculate effect sizes
 dataset <-escalc(measure="ZCOR", ri=r, ni=N, data=data)
 
@@ -187,14 +186,13 @@ summary(notpublished, digits=3)
 
 
 ## Egger's test and Trim and fill for multilevel meta-analysis
-
 SE <-sqrt(overall$vi)
-Egger <- rma.mv(yi, vi, mods=SE, random = ~1 | EID/SID, data=dataset)
+Egger <- rma.mv(yi, vi, mods=SE, random = list (~1| EID, ~1 | SID), data=dataset)
 print(Egger)
-Funnel <- rma.mv(yi, vi, mods=N, random= ~ 1 | EID/SID, data= dataset)
+Funnel <- rma.mv(yi, vi, mods=N, random= list (~1| EID, ~1 | SID), data= dataset)
 print(Funnel)
 
-h <- rma.mv(yi, vi, random= ~ 1 | EID/SID, data= dataset)
+h <- rma.mv(yi, vi, random= list (~1| EID, ~1 | SID), data= dataset)
 pooled_d<-h$b[1]
 d<-dataset$yi
 R0_func<-function(d, pooled_d){ 
